@@ -1,6 +1,6 @@
 # `@fenwik/togglinear`
 
-Start [Toggl Track](https://toggl.com/track/) time entry from your [Linear](https://linear.app/)
+Start [Toggl Track](https://toggl.com/track/) time entry from your [Linear](https://linear.app/) task list.
 
 
 ## Installation
