@@ -1,0 +1,36 @@
+{
+  "name": "togglinear",
+  "version": "0.1.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "bin": {
+    "togglinear": "bin/togglinear"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "arg": "^5.0.0",
+    "btoa": "^1.2.1",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "esm": "^3.2.25",
+    "inquirer": "^7.3.3",
+    "inquirer-autocomplete-prompt": "^1.3.0",
+    "node-fetch": "^2.6.1",
+    "path": "^0.12.7"
+  },
+  "description": "Start Toggl time entry from your Linear",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fenwik/togglinear.git"
+  },
+  "keywords": [
+    "linear",
+    "toggl",
+    "issue",
+    "tracking"
+  ]
+}

@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+require = require('esm')(module /*, options*/); // eslint-disable-line no-global-assign, spaced-comment
+require('../src/index').default(process.argv);
