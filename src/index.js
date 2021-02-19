@@ -9,6 +9,10 @@ import startTimeEntry from './startTimeEntry';
 
 const ui = new inquirer.ui.BottomBar();
 
+process.on('SIGINT', () => {
+  ui.close();
+});
+
 const cli = async(args) => {
   const flags = arg({
     '--reset-config': Boolean
@@ -20,10 +24,6 @@ const cli = async(args) => {
   if (flags['--reset-config']) {
     await resetConfig();
   }
-
-  process.on('SIGINT', () => {
-    ui.close();
-  });
 
   ui.updateBottomBar('Loading recent issues...');
 
