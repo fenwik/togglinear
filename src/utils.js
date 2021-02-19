@@ -1,3 +1,5 @@
+import path from 'path';
+import os from 'os';
 import fetch from 'node-fetch';
 import btoa from 'btoa';
 
@@ -6,6 +8,10 @@ let CONFIG = {
   linearApiKey: null
 };
 
+export const configPath = path.join(os.homedir(), '/.togglinear');
+
+export const configFile = path.join(configPath, '/config.json');
+
 export const setConfig = (config) => {
   CONFIG = {
     ...CONFIG,
@@ -13,7 +19,7 @@ export const setConfig = (config) => {
   };
 };
 
-export const createRequest = async(path, {
+export const createRequest = async(endpoint, {
   headers = {},
   method = 'GET',
   sendData
@@ -27,18 +33,18 @@ export const createRequest = async(path, {
     options.body = JSON.stringify(sendData);
   }
 
-  const response = await fetch(path, options);
+  const response = await fetch(endpoint, options);
 
   return response;
 };
 
-export const createTogglApiRequest = async(path, {
+export const createTogglApiRequest = async(endpoint, {
   method,
   token,
   sendData
 }) => {
   const credentials = btoa(`${token || CONFIG.togglApiToken}:api_token`);
-  const response = await createRequest(`https://api.track.toggl.com/api/v8${path}`, {
+  const response = await createRequest(`https://api.track.toggl.com/api/v8${endpoint}`, {
     method,
     headers: {
       Authorization: `Basic ${credentials}`,
@@ -52,8 +58,8 @@ export const createTogglApiRequest = async(path, {
 
   if (!ok) {
     const text = await response.text();
-    console.warn(method, path, status, statusText);
-    console.log(text);
+    console.warn(method, endpoint, status, statusText);
+    console.warn(text);
 
     return result;
   }
@@ -80,7 +86,10 @@ export const createLinearApiRequest = async(query, {
   const result = { status, ok };
 
   if (!ok) {
+    const text = await response.text();
     console.warn('POST', 'https://api.linear.app/graphql', status, statusText);
+    console.warn(text);
+
     return result;
   }
 
