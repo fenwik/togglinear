@@ -7,8 +7,7 @@ import {
   getLinearIssueSearch
 } from './requests';
 import {
-  buildIssueChoiceItem,
-  requestErrorHandler
+  buildIssueChoiceItem
 } from './utils';
 
 inquirer.registerPrompt('autocomplete', inquirerAutocompletePrompt);
@@ -26,12 +25,10 @@ const debounceValue = async(value) => new Promise((resolve) => {
 
 const searchIssue = async() => {
   const viewer = await getLinearUserInfo()
-    .then(({ data }) => data.data.viewer)
-    .catch(requestErrorHandler);
+    .then(({ data }) => data.data.viewer);
   const defaultIssues = await getLinearUserRecentIssues(viewer.id)
     .then(({ data }) => data.data.user.assignedIssues.nodes)
-    .then((list) => list.map(buildIssueChoiceItem))
-    .catch(requestErrorHandler);
+    .then((list) => list.map(buildIssueChoiceItem));
 
   const { issue } = await inquirer.prompt({
     type: 'autocomplete',
@@ -46,7 +43,7 @@ const searchIssue = async() => {
       }
 
       const value = await debounceValue(input);
-      const { data } = await getLinearIssueSearch(value).catch(requestErrorHandler);
+      const { data } = await getLinearIssueSearch(value);
       const issues = data.data.issueSearch.nodes.map(buildIssueChoiceItem);
 
       return issues;

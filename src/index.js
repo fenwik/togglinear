@@ -7,6 +7,7 @@ import {
   resetProjectsMapping
 } from './utils';
 import getConfig from './getConfig';
+import getIssue from './getIssue';
 import searchIssue from './searchIssue';
 import startTimeEntry from './startTimeEntry';
 
@@ -16,16 +17,16 @@ process.on('SIGINT', () => {
   ui.close();
 });
 
-const cli = async(args) => {
-  const flags = arg({
+const cli = async(argv) => {
+  const args = arg({
     '--reset-config': Boolean,
     '--reset-projects-mapping': Boolean
   },
   {
-    argv: args.slice(2)
+    argv
   });
 
-  if (flags['--reset-config']) {
+  if (args['--reset-config']) {
     await deleteConfigFile();
   }
 
@@ -34,11 +35,21 @@ const cli = async(args) => {
   const config = await getConfig();
   setConfig(config);
 
-  if (flags['--reset-projects-mapping']) {
+  if (args['--reset-projects-mapping']) {
     await resetProjectsMapping();
   }
 
-  const issue = await searchIssue();
+  const issueId = args._[2];
+  const issue = issueId ? await getIssue(issueId) : await searchIssue();
+
+  if (!issue) {
+    ui.updateBottomBar('');
+    ui.log.write(`Can't find issue ${issueId}`);
+    ui.close();
+    return;
+  }
+
+  throw new Error('TEST');
 
   ui.updateBottomBar('Starting new time entry...');
 

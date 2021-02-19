@@ -82,6 +82,32 @@ export const getLinearIssueSearch = async(query) => {
   return result;
 };
 
+export const getLinearIssue = async(id) => {
+  const result = await createLinearApiRequest(`
+    query Issue($id: String!) {
+      issue(
+        id: $id
+      ) {
+        title
+        identifier
+        project {
+          id
+          name
+        }
+        state {
+          name
+        }
+      }
+    }
+  `, {
+    variables: {
+      id
+    }
+  });
+
+  return result;
+};
+
 // Toggl
 
 export const getTogglUserInfo = async(token) => {

@@ -69,13 +69,13 @@ export const createTogglApiRequest = async(endpoint, {
     sendData
   });
 
-  const { status, ok, statusText } = response;
+  const { status, ok } = response;
   const result = { status, ok };
 
   if (!ok) {
-    const text = await response.text();
-    console.warn(method, endpoint, status, statusText);
-    console.warn(text);
+    // const text = await response.text();
+    // console.warn(method, endpoint, status, response.statusText);
+    // console.warn(text);
 
     return result;
   }
@@ -98,13 +98,13 @@ export const createLinearApiRequest = async(query, {
     sendData: { query, variables }
   });
 
-  const { status, ok, statusText } = response;
+  const { status, ok } = response;
   const result = { status, ok };
 
   if (!ok) {
-    const text = await response.text();
-    console.warn('POST', 'https://api.linear.app/graphql', status, statusText);
-    console.warn(text);
+    // const text = await response.text();
+    // console.warn('POST', 'https://api.linear.app/graphql', status, statusText.statusText);
+    // console.warn(text);
 
     return result;
   }
@@ -121,10 +121,6 @@ export const createLinearApiRequest = async(query, {
       };
     })
     .catch(() => result);
-};
-
-export const requestErrorHandler = (error) => {
-  throw new Error(error);
 };
 
 export const buildIssueChoiceItem = (issue) => {
