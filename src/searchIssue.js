@@ -7,7 +7,7 @@ import {
   getLinearIssueSearch
 } from './requests';
 import {
-  buildIssueChoiseItem,
+  buildIssueChoiceItem,
   requestErrorHandler
 } from './utils';
 
@@ -19,7 +19,7 @@ const searchIssue = async() => {
     .catch(requestErrorHandler);
   const defaultIssues = await getLinearUserRecentIssues(viewer.id)
     .then(({ data }) => data.data.user.assignedIssues.nodes)
-    .then((list) => list.map(buildIssueChoiseItem))
+    .then((list) => list.map(buildIssueChoiceItem))
     .catch(requestErrorHandler);
 
   const { issue } = await inquirer.prompt({
@@ -35,7 +35,7 @@ const searchIssue = async() => {
       }
 
       const { data } = await getLinearIssueSearch(input).catch(requestErrorHandler);
-      const issues = data.data.issueSearch.nodes.map(buildIssueChoiseItem);
+      const issues = data.data.issueSearch.nodes.map(buildIssueChoiceItem);
 
       return issues;
     }

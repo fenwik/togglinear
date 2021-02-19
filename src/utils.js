@@ -13,7 +13,6 @@ export const setConfig = (config) => {
   };
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const createRequest = async(path, {
   headers = {},
   method = 'GET',
@@ -103,7 +102,7 @@ export const requestErrorHandler = (error) => {
   throw new Error(error);
 };
 
-export const buildIssueChoiseItem = (issue) => {
+export const buildIssueChoiceItem = (issue) => {
   const description = `${issue.identifier} ${issue.title}`;
   const projectFull = issue.project ? issue.project.name : null;
   const state = issue.state ? issue.state.name : null;

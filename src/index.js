@@ -23,6 +23,10 @@ const cli = async(args) => {
     await fs.rmdir(path.join(os.homedir(), '/.togglinear'), { recursive: true }).catch(console.error);
   }
 
+  process.on('SIGINT', () => {
+    ui.close();
+  });
+
   ui.updateBottomBar('Loading recent issues...');
 
   const config = await getConfig();
