@@ -19,7 +19,6 @@ export const setConfig = (config) => {
   };
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const createRequest = async(endpoint, {
   headers = {},
   method = 'GET',
