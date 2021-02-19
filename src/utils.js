@@ -29,8 +29,8 @@ export const saveConfigFile = async(upd) => {
     ...upd
   };
 
-  fs.mkdir(configPath, { recursive: true });
-  fs.writeFile(configFile, JSON.stringify(data), 'utf8');
+  await fs.mkdir(configPath, { recursive: true });
+  await fs.writeFile(configFile, JSON.stringify(data), 'utf8');
 };
 
 export const deleteConfigFile = async() => fs.rmdir(configPath, { recursive: true });
@@ -202,4 +202,10 @@ export const getPid = async(project, togglProjects) => {
   saveConfigFile();
 
   return pid;
+};
+
+export const resetProjectsMapping = async() => {
+  CONFIG.projectsMap = {};
+
+  await saveConfigFile();
 };

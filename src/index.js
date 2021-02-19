@@ -3,7 +3,8 @@ import arg from 'arg';
 
 import {
   setConfig,
-  deleteConfigFile
+  deleteConfigFile,
+  resetProjectsMapping
 } from './utils';
 import getConfig from './getConfig';
 import searchIssue from './searchIssue';
@@ -17,7 +18,8 @@ process.on('SIGINT', () => {
 
 const cli = async(args) => {
   const flags = arg({
-    '--reset-config': Boolean
+    '--reset-config': Boolean,
+    '--reset-projects-mapping': Boolean
   },
   {
     argv: args.slice(2)
@@ -31,6 +33,11 @@ const cli = async(args) => {
 
   const config = await getConfig();
   setConfig(config);
+
+  if (flags['--reset-projects-mapping']) {
+    await resetProjectsMapping();
+  }
+
   const issue = await searchIssue();
 
   ui.updateBottomBar('Starting new time entry...');
