@@ -1,11 +1,9 @@
-import { promises as fs } from 'fs';
-import path from 'path';
-import os from 'os';
 import inquirer from 'inquirer';
 import arg from 'arg';
 
 import { setConfig } from './utils';
 import getConfig from './getConfig';
+import resetConfig from './resetConfig';
 import searchIssue from './searchIssue';
 import startTimeEntry from './startTimeEntry';
 
@@ -20,7 +18,7 @@ const cli = async(args) => {
   });
 
   if (flags['--reset-config']) {
-    await fs.rmdir(path.join(os.homedir(), '/.togglinear'), { recursive: true }).catch(console.error);
+    await resetConfig();
   }
 
   ui.updateBottomBar('Loading recent issues...');
