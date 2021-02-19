@@ -33,6 +33,7 @@ export const getLinearUserRecentIssues = async(id) => {
             title
             identifier
             project {
+              id
               name
             }
             state {
@@ -63,6 +64,7 @@ export const getLinearIssueSearch = async(query) => {
           title
           identifier
           project {
+            id
             name
           }
           state {

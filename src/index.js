@@ -1,9 +1,11 @@
 import inquirer from 'inquirer';
 import arg from 'arg';
 
-import { setConfig } from './utils';
+import {
+  setConfig,
+  deleteConfigFile
+} from './utils';
 import getConfig from './getConfig';
-import resetConfig from './resetConfig';
 import searchIssue from './searchIssue';
 import startTimeEntry from './startTimeEntry';
 
@@ -22,7 +24,7 @@ const cli = async(args) => {
   });
 
   if (flags['--reset-config']) {
-    await resetConfig();
+    await deleteConfigFile();
   }
 
   ui.updateBottomBar('Loading recent issues...');

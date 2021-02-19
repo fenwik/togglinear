@@ -2,8 +2,8 @@ import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
 
 import {
-  configPath,
-  configFile
+  configFile,
+  saveConfigFile
 } from './utils';
 
 import {
@@ -53,8 +53,7 @@ const getConfig = () => fs.readFile(configFile)
       linearApiKey
     };
 
-    await fs.mkdir(configPath, { recursive: true });
-    await fs.writeFile(configFile, JSON.stringify(config), 'utf8');
+    saveConfigFile(config);
 
     return config;
   });

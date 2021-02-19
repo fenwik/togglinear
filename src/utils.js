@@ -1,23 +1,39 @@
+import { promises as fs } from 'fs';
 import path from 'path';
 import os from 'os';
 import fetch from 'node-fetch';
 import btoa from 'btoa';
+import { compareTwoStrings } from 'string-similarity';
+import inquirer from 'inquirer';
 
 let CONFIG = {
   togglApiToken: null,
-  linearApiKey: null
+  linearApiKey: null,
+  projectsMap: {}
 };
 
 export const configPath = path.join(os.homedir(), '/.togglinear');
 
 export const configFile = path.join(configPath, '/config.json');
 
-export const setConfig = (config) => {
+export const setConfig = (upd) => {
   CONFIG = {
     ...CONFIG,
-    ...config
+    ...upd
   };
 };
+
+export const saveConfigFile = async(upd) => {
+  const data = {
+    ...CONFIG,
+    ...upd
+  };
+
+  fs.mkdir(configPath, { recursive: true });
+  fs.writeFile(configFile, JSON.stringify(data), 'utf8');
+};
+
+export const deleteConfigFile = async() => fs.rmdir(configPath, { recursive: true });
 
 export const createRequest = async(endpoint, {
   headers = {},
@@ -113,10 +129,9 @@ export const requestErrorHandler = (error) => {
 
 export const buildIssueChoiceItem = (issue) => {
   const description = `${issue.identifier} ${issue.title}`;
-  const projectFull = issue.project ? issue.project.name : null;
+  const project = issue.project ? issue.project : null;
   const state = issue.state ? issue.state.name : null;
-  const meta = `${projectFull ? ` [${projectFull}]` : ''}${state ? ` (${state})` : ''}`;
-  const project = projectFull ? projectFull.split(' ')[0] : null;
+  const meta = `${project ? ` [${project.name}]` : ''}${state ? ` (${state})` : ''}`;
 
   return {
     name: `${description}${meta}`,
@@ -126,4 +141,65 @@ export const buildIssueChoiceItem = (issue) => {
       project
     }
   };
+};
+
+export const getPid = async(project, togglProjects) => {
+  if (!togglProjects.length) {
+    return null;
+  }
+
+  if (project && typeof CONFIG.projectsMap[project.id] !== 'undefined') {
+    return CONFIG.projectsMap[project.id];
+  }
+
+  const projectName = project ? project.name : null;
+  const projects = togglProjects.map(({ name, id }) => ({
+    name,
+    value: id,
+    similarity: projectName
+      ? compareTwoStrings(projectName.toLowerCase(), name.toLowerCase())
+      : 0
+  }));
+  projects.sort((a, b) => b.similarity - a.similarity);
+  const similarProjects = projects.filter(({ similarity }) => similarity >= 0.5);
+  const otherProjects = projects.filter(({ similarity }) => similarity < 0.5);
+
+  let choices = [];
+
+  if (similarProjects.length) {
+    choices = [
+      ...similarProjects,
+      new inquirer.Separator()
+    ];
+  }
+
+  choices = [
+    ...choices,
+    {
+      name: '-- No project --',
+      value: null
+    },
+    ...otherProjects
+  ];
+
+  const answer = await inquirer.prompt({
+    type: 'list',
+    name: 'project',
+    message: 'Select project:',
+    loop: false,
+    choices
+  });
+
+  const pid = typeof answer.project === 'number' ? answer.project : null;
+
+  if (project.id) {
+    CONFIG.projectsMap = {
+      ...CONFIG.projectsMap,
+      [project.id]: pid
+    };
+  }
+
+  saveConfigFile();
+
+  return pid;
 };
