@@ -2,6 +2,8 @@
 
 Start [Toggl Track](https://toggl.com/track/) time entry from your [Linear](https://linear.app/) task list.
 
+![Preview](./preview.gif)
+
 
 ## Installation
 
@@ -21,9 +23,17 @@ Use `togglinear` CLI command.
 
 When running for the first time, you will need to enter your Linear API key and Toggl API Token.
 
+You can start Linear task by ID
+
+    $ togglinear BAR-123
+
 To reset config run:
 
     $ togglinear --reset-config
+
+To reset projects mapping run:
+
+    $ togglinear --reset-projects-mapping
 
 
 ## License
