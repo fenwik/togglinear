@@ -1,6 +1,6 @@
 {
   "name": "@fenwik/togglinear",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "src/index.js",
   "author": "Dmitriy Tagakov",
   "license": "MIT",
