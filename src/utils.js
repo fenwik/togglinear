@@ -124,10 +124,24 @@ export const createLinearApiRequest = async(query, {
     .catch(() => result);
 };
 
-export const buildIssueChoiceItem = (issue) => {
+export const processIssue = (issue) => {
   const description = `${issue.identifier} ${issue.title}`;
   const project = issue.project ? issue.project : null;
   const state = issue.state ? issue.state : null;
+
+  return {
+    description,
+    project,
+    state
+  };
+};
+
+export const buildIssueChoiceItem = (issue) => {
+  const {
+    description,
+    project,
+    state
+  } = processIssue(issue);
   const meta = `${project ? ` ${chalk.hex(project.color).bold(project.name)}` : ''}`
     + `${state ? ` ${chalk.hex(state.color).bold(`(${state.name})`)}` : ''}`;
 

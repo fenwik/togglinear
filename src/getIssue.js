@@ -1,6 +1,9 @@
 import {
   getLinearIssue
 } from './requests';
+import {
+  processIssue
+} from './utils';
 
 const getIssue = async(id) => {
   const response = await getLinearIssue(id).catch((res) => res);
@@ -9,7 +12,7 @@ const getIssue = async(id) => {
     return null;
   }
 
-  const { issue } = response.data.data;
+  const issue = processIssue(response.data.data.issue);
 
   return issue;
 };

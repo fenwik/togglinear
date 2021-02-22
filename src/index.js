@@ -46,7 +46,9 @@ const seq = async({
 const cli = (argv) => {
   const args = arg({
     '--reset-config': Boolean,
-    '--reset-projects-mapping': Boolean
+    '--reset-projects-mapping': Boolean,
+    '--rc': '--reset-config',
+    '--rpm': '--reset-projects-mapping'
   },
   {
     argv
