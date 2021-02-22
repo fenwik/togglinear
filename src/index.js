@@ -27,8 +27,6 @@ const seq = async({
     await deleteProjectsMapping();
   }
 
-  console.log('Searching for issue...');
-
   const issue = issueId ? await getIssue(issueId) : await searchIssue();
 
   if (!issue) {
