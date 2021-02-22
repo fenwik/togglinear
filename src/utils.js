@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs';
+import chalk from 'chalk';
 import path from 'path';
 import os from 'os';
 import fetch from 'node-fetch';
@@ -126,8 +127,9 @@ export const createLinearApiRequest = async(query, {
 export const buildIssueChoiceItem = (issue) => {
   const description = `${issue.identifier} ${issue.title}`;
   const project = issue.project ? issue.project : null;
-  const state = issue.state ? issue.state.name : null;
-  const meta = `${project ? ` [${project.name}]` : ''}${state ? ` (${state})` : ''}`;
+  const state = issue.state ? issue.state : null;
+  const meta = `${project ? ` ${chalk.hex(project.color).bold(project.name)}` : ''}`
+    + `${state ? ` ${chalk.hex(state.color).bold(`(${state.name})`)}` : ''}`;
 
   return {
     name: `${description}${meta}`,
@@ -148,12 +150,16 @@ export const getPid = async(project, togglProjects) => {
     return CONFIG.projectsMap[project.id];
   }
 
-  const projectName = project ? project.name : null;
-  const projects = togglProjects.map(({ name, id }) => ({
+  const projectName = project ? project.name.toLowerCase() : null;
+  const projects = togglProjects.map(({
     name,
+    id,
+    hex_color: hex
+  }) => ({
+    name: chalk.hex(hex).bold(name),
     value: id,
     similarity: projectName
-      ? compareTwoStrings(projectName.toLowerCase(), name.toLowerCase())
+      ? compareTwoStrings(projectName, name.toLowerCase())
       : 0
   }));
   projects.sort((a, b) => b.similarity - a.similarity);
@@ -200,7 +206,7 @@ export const getPid = async(project, togglProjects) => {
   return pid;
 };
 
-export const resetProjectsMapping = async() => {
+export const deleteProjectsMapping = async() => {
   CONFIG.projectsMap = {};
 
   await saveConfigFile();

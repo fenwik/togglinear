@@ -1,23 +1,49 @@
-import inquirer from 'inquirer';
 import arg from 'arg';
+import chalk from 'chalk';
 
 import {
   setConfig,
   deleteConfigFile,
-  resetProjectsMapping
+  deleteProjectsMapping
 } from './utils';
 import getConfig from './getConfig';
 import getIssue from './getIssue';
 import searchIssue from './searchIssue';
 import startTimeEntry from './startTimeEntry';
 
-const ui = new inquirer.ui.BottomBar();
+const seq = async({
+  resetConfig,
+  resetProjectsMapping,
+  issueId
+}) => {
+  if (resetConfig) {
+    await deleteConfigFile();
+  }
 
-process.on('SIGINT', () => {
-  ui.close();
-});
+  const config = await getConfig();
+  setConfig(config);
 
-const cli = async(argv) => {
+  if (resetProjectsMapping) {
+    await deleteProjectsMapping();
+  }
+
+  console.log('Searching for issue...');
+
+  const issue = issueId ? await getIssue(issueId) : await searchIssue();
+
+  if (!issue) {
+    console.log(chalk.red(`Can't find issue ${issueId}`));
+    return;
+  }
+
+  const [entry, project] = await startTimeEntry(issue);
+
+  console.log('\nStart new time entry:'
+    + `\n${chalk.gray(entry.data.description)}`
+    + `\n${project ? chalk.hex(project.hex_color.toUpperCase()).bold(project.name) : ''}\n`);
+};
+
+const cli = (argv) => {
   const args = arg({
     '--reset-config': Boolean,
     '--reset-projects-mapping': Boolean
@@ -26,36 +52,15 @@ const cli = async(argv) => {
     argv
   });
 
-  if (args['--reset-config']) {
-    await deleteConfigFile();
-  }
+  const options = {
+    resetConfig: args['--reset-config'] || false,
+    resetProjectsMapping: args['--reset-projects-mapping'] || false,
+    issueId: args._[2] || null
+  };
 
-  ui.updateBottomBar('Loading recent issues...');
-
-  const config = await getConfig();
-  setConfig(config);
-
-  if (args['--reset-projects-mapping']) {
-    await resetProjectsMapping();
-  }
-
-  const issueId = args._[2];
-  const issue = issueId ? await getIssue(issueId) : await searchIssue();
-
-  if (!issue) {
-    ui.updateBottomBar('');
-    ui.log.write(`Can't find issue ${issueId}`);
-    ui.close();
-    return;
-  }
-
-  throw new Error('TEST');
-
-  ui.updateBottomBar('Starting new time entry...');
-
-  const entry = await startTimeEntry(issue);
-
-  ui.updateBottomBar(`Start new time entry: ${entry.data.description}`);
+  seq(options).catch((error) => {
+    console.error(error);
+  });
 };
 
 export default cli;

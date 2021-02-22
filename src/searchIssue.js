@@ -33,7 +33,7 @@ const searchIssue = async() => {
   const { issue } = await inquirer.prompt({
     type: 'autocomplete',
     name: 'issue',
-    message: 'Search issue:',
+    message: 'Select issue:',
     suggestOnly: false,
     pageSize: 10,
     validate: (value) => !!value || 'Type something!',

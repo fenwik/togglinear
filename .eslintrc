@@ -10,7 +10,7 @@
       "never"
     ],
     "no-console": [
-      1,
+      0,
       {
         "allow": [
           "warn",

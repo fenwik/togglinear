@@ -26,7 +26,12 @@ const startTimeEntry = async(issue) => {
     throw new Error('`postTogglTimeEntryStart` request failed');
   }
 
-  return createTimeEntryStart.data;
+  const project = togglUserData.projects.find(({ id }) => id === pid) || null;
+
+  return [
+    createTimeEntryStart.data,
+    project
+  ];
 };
 
 export default startTimeEntry;

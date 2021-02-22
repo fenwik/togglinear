@@ -35,9 +35,11 @@ export const getLinearUserRecentIssues = async(id) => {
             project {
               id
               name
+              color
             }
             state {
               name
+              color
             }
           }
         }
@@ -66,9 +68,11 @@ export const getLinearIssueSearch = async(query) => {
           project {
             id
             name
+            color
           }
           state {
             name
+            color
           }
         }
       }
@@ -93,9 +97,11 @@ export const getLinearIssue = async(id) => {
         project {
           id
           name
+          color
         }
         state {
           name
+          color
         }
       }
     }
