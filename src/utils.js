@@ -55,11 +55,12 @@ export const createRequest = async(endpoint, {
   return response;
 };
 
-export const createTogglApiRequest = async(endpoint, {
-  method,
-  token,
-  sendData
-}) => {
+export const createTogglApiRequest = async(endpoint, options = {}) => {
+  const {
+    method,
+    token,
+    sendData
+  } = options;
   const credentials = btoa(`${token || CONFIG.togglApiToken}:api_token`);
   const response = await createRequest(`https://api.track.toggl.com/api/v8${endpoint}`, {
     method,
@@ -74,9 +75,9 @@ export const createTogglApiRequest = async(endpoint, {
   const result = { status, ok };
 
   if (!ok) {
-    // const text = await response.text();
-    // console.warn(method, endpoint, status, response.statusText);
-    // console.warn(text);
+    const text = await response.text();
+    console.warn(method, endpoint, status, response.statusText);
+    console.warn(text);
 
     return result;
   }
@@ -86,10 +87,11 @@ export const createTogglApiRequest = async(endpoint, {
     .catch(() => result);
 };
 
-export const createLinearApiRequest = async(query, {
-  variables,
-  apiKey
-}) => {
+export const createLinearApiRequest = async(query, options = {}) => {
+  const {
+    variables,
+    apiKey
+  } = options;
   const response = await createRequest('https://api.linear.app/graphql', {
     method: 'POST',
     headers: {
@@ -103,9 +105,9 @@ export const createLinearApiRequest = async(query, {
   const result = { status, ok };
 
   if (!ok) {
-    // const text = await response.text();
-    // console.warn('POST', 'https://api.linear.app/graphql', status, statusText.statusText);
-    // console.warn(text);
+    const text = await response.text();
+    console.warn('POST', 'https://api.linear.app/graphql', status, response.statusText);
+    console.warn(text);
 
     return result;
   }

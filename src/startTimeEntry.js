@@ -1,5 +1,6 @@
 import {
   getTogglUserInfo,
+  getTogglWorkspaceProjectList,
   postTogglTimeEntryStart
 } from './requests';
 import {
@@ -13,12 +14,20 @@ const startTimeEntry = async(issue) => {
     throw new Error('`getTogglUserInfo` request failed');
   }
 
-  const togglUserData = getUser.data.data;
-  const pid = await getPid(issue.project, togglUserData.projects);
+  const { default_wid: wid } = getUser.data.data;
+
+  const getProjects = await getTogglWorkspaceProjectList(wid);
+
+  if (!getProjects.ok) {
+    throw new Error('`getTogglWorkspaceProjectList` request failed');
+  }
+
+  const projects = getProjects.data;
+  const pid = await getPid(issue.project, projects);
 
   const createTimeEntryStart = await postTogglTimeEntryStart(
     issue.description,
-    togglUserData.default_wid,
+    wid,
     pid
   );
 
@@ -26,7 +35,7 @@ const startTimeEntry = async(issue) => {
     throw new Error('`postTogglTimeEntryStart` request failed');
   }
 
-  const project = togglUserData.projects.find(({ id }) => id === pid) || null;
+  const project = projects.find(({ id }) => id === pid) || null;
 
   return [
     createTimeEntryStart.data,

@@ -122,6 +122,12 @@ export const getTogglUserInfo = async(token) => {
   return result;
 };
 
+export const getTogglWorkspaceProjectList = async(wid) => {
+  const result = await createTogglApiRequest(`/workspaces/${wid}/projects`);
+
+  return result;
+};
+
 export const postTogglTimeEntryStart = async(description, wid, pid) => {
   const result = await createTogglApiRequest('/time_entries/start', {
     method: 'POST',
