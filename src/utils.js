@@ -158,6 +158,10 @@ export const buildIssueChoiceItem = (issue) => {
 };
 
 export const getPid = async(project, togglProjects) => {
+  if (!project) {
+    return null;
+  }
+
   if (!togglProjects.length) {
     return null;
   }
