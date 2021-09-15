@@ -158,10 +158,6 @@ export const buildIssueChoiceItem = (issue) => {
 };
 
 export const getPid = async(project, togglProjects) => {
-  if (!project) {
-    return null;
-  }
-
   if (!togglProjects.length) {
     return null;
   }
@@ -214,7 +210,7 @@ export const getPid = async(project, togglProjects) => {
 
   const pid = typeof answer.project === 'number' ? answer.project : null;
 
-  if (project.id) {
+  if (project && project.id) {
     CONFIG.projectsMap = {
       ...CONFIG.projectsMap,
       [project.id]: pid
